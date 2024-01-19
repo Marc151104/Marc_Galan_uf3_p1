@@ -19,13 +19,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware('year')->group(function() {
-    Route::group(['prefix'=>'filmout'], function(){
+Route::middleware('year')->group(function () {
+    Route::group(['prefix' => 'filmout'], function () {
         // Routes included with prefix "filmout"
-        Route::get('oldFilms/{year?}',[FilmController::class, "listOldFilms"])->name('oldFilms');
-        Route::get('newFilms/{year?}',[FilmController::class, "listNewFilms"])->name('newFilms');
-        Route::get('films/{year?}/{genre?}',[FilmController::class, "listFilms"])->name('listFilms');
+        Route::get('/oldFilms/{year?}', [FilmController::class, "listOldFilms"])->name('oldFilms');
+        Route::get('/newFilms/{year?}', [FilmController::class, "listNewFilms"])->name('newFilms');
+        Route::get('/filmsByYear/{year?}', [FilmController::class, "listFilmsByYear"])->name('filmsbyYear');
+        Route::get('/filmsByGenre/{genre?}', [FilmController::class, "listFilmsByGenre"])->name('filmsbyGenre');
+        Route::get('/listFilms', [FilmController::class, "listFilms"])->name('listfilms');
+        Route::get('/sortFilms', [FilmController::class, "sortFilms"])->name('filmssort');
+        Route::get('/countFilms', [FilmController::class, "countFilms"])->name('filmscount');
     });
 });
 
-
+Route::middleware('urlImage')->group(function () {
+    Route::group(['prefix' => 'filmin'], function () {
+        // Routes included with prefix "filmin"
+        Route::post('/createFilm', [FilmController::class, "createFilm"])->name('createFilm');
+    });
+});
