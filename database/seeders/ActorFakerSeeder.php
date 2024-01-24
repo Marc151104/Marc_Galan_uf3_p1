@@ -28,8 +28,8 @@ class ActorFakerSeeder extends Seeder
                     "birtdate" => $faker->date(),
                     "country" => $faker->country(),
                     "img_url" => $faker->imageUrl(),
-                    "created_at" => now()->setTimezone("Europe/Madrid")
-
+                    "created_at" => now()->setTimezone("Europe/Madrid"),
+                    "salary" => $faker->numberBetween(10000, 50000)
                 ]
             );
         }

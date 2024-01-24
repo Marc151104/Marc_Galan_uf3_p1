@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('birtdate');
             $table->string('country', 30);
             $table->string('img_url', 255);
+            $table->integer('salary');
             $table->timestamps();
         });
     }
