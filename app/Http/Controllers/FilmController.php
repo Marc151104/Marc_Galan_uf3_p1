@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Film;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
+use PHPUnit\TextUI\Configuration\Merger;
 
 class FilmController extends Controller
 {
-
     /**
      * Read films from storage
      */
     public static function readFilms(): array
     {
-        $films = Storage::json('/public/films.json');
+        $filmsjson = Storage::json('/public/films.json');
+        $filmsbbdd = DB::table("films")->select('name', 'year', 'genre', 'country', 'duration', 'img_url')->get();
+        $actorsArray = json_decode(json_encode($filmsbbdd), true);
+        $films = array_merge($filmsjson, $actorsArray);
         return $films;
     }
     /**
@@ -142,30 +145,38 @@ class FilmController extends Controller
     }
 
 
-    public function createFilm() {
-        
+    public function createFilm()
+    {
+        $source = env('Base_Data', 'database');
         $filmExis = FilmController::isFilm($_POST["name"]);
-        if ($filmExis){
+        if ($filmExis) {
             return view('welcome', ["Error" => "Sorry but this film exists"]);
-        }else{
+        } else {
             $films = FilmController::readFilms();
             $film = [
-                "name" => $_POST["name"], 
-                "country" => $_POST["country"], 
-                "duration" => $_POST["duration"], 
-                "year" => $_POST["year"], 
-                "genre" => $_POST["genre"], 
+                "name" => $_POST["name"],
+                "country" => $_POST["country"],
+                "duration" => $_POST["duration"],
+                "year" => $_POST["year"],
+                "genre" => $_POST["genre"],
                 "img_url" => $_POST["urlImage"]
             ];
-            $films[] = $film; 
-            $jsonFilm = json_encode($films, JSON_PRETTY_PRINT);
-            Storage::put('public/films.json', $jsonFilm);
-            $title = "Listado de Pelis";
-            return view('films.list', ["films" => $films, "title" => $title]);
-
+            if ($filmExis) {
+                return view('welcome', ["Error" => "Sorry but this film exists"]);
+            } else {
+                if ($source === 'json') {
+                    $films[] = $film;
+                    $jsonFilm = json_encode($films, JSON_PRETTY_PRINT);
+                    Storage::put('public/films.json', $jsonFilm);
+                } else {
+                    DB::table('films')->insert($film);
+                }
+                $title = "Listado de Pelis";
+                $films = FilmController::readFilms();
+                return view('films.list', ["films" => $films, "title" => $title]);
+            }
         }
     }
-
     public function isFilm($name = null): bool
     {
         $films = FilmController::readFilms();

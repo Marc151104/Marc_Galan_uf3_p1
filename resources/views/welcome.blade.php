@@ -67,6 +67,25 @@
         <li><a href="/filmout/sortFilms">Ordenar Pelis</a></li>
         <li><a href="/filmout/countFilms">Contar Pelis</a></li>
     </ul>
+    <h1 class="mt-4">Lista de Actores</h1>
+    <ul>
+        <li><a href="/actorout/actors">List Actors</a></li>
+        <div>
+            <form action="{{ route('listActorsDecade') }}" method="get">
+                <label for="decada">Selecciona una década:</label>
+                <select name="decada" id="decada">
+                    <option value="1970">1970s</option>
+                    <option value="1980">1980s</option>
+                    <option value="1990">1990s</option>
+                    <option value="2000">2000s</option>
+                    <option value="2010">2010s</option>
+                    <option value="2020">2020s</option>
+                </select>
+                <button type="submit">Filtrar</button>
+            </form>
+        </div>
+        <li><a href="/actorout/countActors">Contar Actores</a></li>
+    </ul>
 
     <h1>Create a New Film</h1>
     <form action="{{ route('createFilm') }}" method="POST">
@@ -108,4 +127,5 @@
     <!-- Include any additional HTML or Blade directives here -->
 
 </body>
+
 </html>
