@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Actor;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Film;
 use Illuminate\Http\Request;
@@ -14,7 +15,8 @@ class ActorController extends Controller
      */
     public static function readActors()
     {
-        $actors = DB::table("actors")->select('name', 'surename', 'birtdate', 'country', 'img_url')->get();
+        //$actors = DB::table("actors")->select('name', 'surename', 'birtdate', 'country', 'img_url')->get();
+        $actors = Actor::where('name', 'surename', 'birtdate', 'country', 'img_url')->get();
         $actorsArray = json_decode(json_encode($actors), true);
         return $actorsArray;
     }
@@ -61,14 +63,12 @@ class ActorController extends Controller
 
     public function deleteActors($id)
     {
-        $actorToDelete = DB::table('actors')
-            ->where('id', $id)
-            ->delete();
+        $actorToDelete = Actor::find($id);
         if ($actorToDelete) {
+            $actorToDelete->delete();
             return response()->json(['action' => $actorToDelete, 'status' => 'True']);
-        }else{
+        } else {
             return response()->json(['action' => $actorToDelete, 'status' => 'False']);
         }
-
     }
 }

@@ -16,7 +16,9 @@ class FilmController extends Controller
     public static function readFilms(): array
     {
         $filmsjson = Storage::json('/public/films.json');
-        $filmsbbdd = DB::table("films")->select('name', 'year', 'genre', 'country', 'duration', 'img_url')->get();
+        //$filmsbbdd = DB::table("films")->select('name', 'year', 'genre', 'country', 'duration', 'img_url')->get();
+        //$filmsbbdd = Film::where('name', 'year', 'genre', 'country', 'duration', 'img_url')->get();
+        $filmsbbdd = Film::all();
         $actorsArray = json_decode(json_encode($filmsbbdd), true);
         $films = array_merge($filmsjson, $actorsArray);
         return $films;
@@ -153,14 +155,14 @@ class FilmController extends Controller
             return view('welcome', ["Error" => "Sorry but this film exists"]);
         } else {
             $films = FilmController::readFilms();
-            $film = [
+            $film = Film::create([
                 "name" => $_POST["name"],
                 "country" => $_POST["country"],
                 "duration" => $_POST["duration"],
                 "year" => $_POST["year"],
                 "genre" => $_POST["genre"],
-                "img_url" => $_POST["urlImage"]
-            ];
+                "img_url" => $_POST["urlImage"],
+            ]);
             if ($filmExis) {
                 return view('welcome', ["Error" => "Sorry but this film exists"]);
             } else {
@@ -169,7 +171,7 @@ class FilmController extends Controller
                     $jsonFilm = json_encode($films, JSON_PRETTY_PRINT);
                     Storage::put('public/films.json', $jsonFilm);
                 } else {
-                    DB::table('films')->insert($film);
+                    // DB::table('films')->insert($film);
                 }
                 $title = "Listado de Pelis";
                 $films = FilmController::readFilms();
